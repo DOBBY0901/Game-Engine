@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
+
 public class CreateManager : MonoBehaviour
 {
     [SerializeField] int count;
     [SerializeField] float time;
     [SerializeField] int coroutincount;
 
+
     [SerializeField] GameObject prefab;
     [SerializeField] List<GameObject> list;
+    [SerializeField] List<Vector3> randomPosition;
    
     void Start()
     {
@@ -35,13 +38,18 @@ public class CreateManager : MonoBehaviour
 
     void Create()
     {
+        
+
         for (int i = 0; i < count; i++)
         {
-            GameObject clone = Instantiate(prefab, transform);
+            
+            GameObject clone = Instantiate(prefab,transform);
             
             clone.SetActive(false);
            
             list.Add(clone);
+
+          
         }
     }
 
@@ -49,18 +57,24 @@ public class CreateManager : MonoBehaviour
     {
         while (coroutincount < list.Count)
         {
+            
             int index = Random.Range(0, list.Count);
             
             yield return new WaitForSeconds(5f);
            
-            if (list[index].activeSelf)
+            while (list[index].activeSelf)
             {
               index = (index + 1) % list.Count;
             }
 
             list[index].SetActive(true);
 
+            list[index].transform.localPosition = randomPosition[index];
+
+
             coroutincount++;
         }
+
     }
+   
 }
