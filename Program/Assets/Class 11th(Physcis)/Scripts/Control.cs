@@ -5,27 +5,46 @@ using UnityEngine.UIElements;
 public class Control : MonoBehaviour
 {
     [SerializeField] float movespeed;
-    [SerializeField] float Bounce;
     [SerializeField] Rigidbody rb;
     
-    Vector3 direction;
+    [SerializeField] ForceMode forceMode;
+    [SerializeField] Vector3 direction;
 
     private void Awake()
     {
+        forceMode = ForceMode.Force;
         rb = GetComponent<Rigidbody>();
     }
     void Update()
     {
       
-        float ad = Input.GetAxisRaw("Horizontal");
-        float ws = Input.GetAxisRaw("Vertical");
+        direction.x = Input.GetAxisRaw("Horizontal");
+        direction.z = Input.GetAxisRaw("Vertical");
 
-        direction = new Vector3(ad,0, ws);
+        direction.Normalize();
 
     }
 
     private void FixedUpdate()
     {
-        rb.AddForce(direction * movespeed, ForceMode.Force);
+        rb.AddForce(direction * movespeed,forceMode);
+    }
+
+    public void Soar()
+    {
+        movespeed= 0.5f;
+        
+        direction = Vector3.up;
+
+        forceMode = ForceMode.Impulse;
+    }
+    
+    public void Revert()
+    {
+        movespeed = 5.0f;
+    
+        direction = Vector3.zero;
+       
+        forceMode = ForceMode.Force;
     }
 }
