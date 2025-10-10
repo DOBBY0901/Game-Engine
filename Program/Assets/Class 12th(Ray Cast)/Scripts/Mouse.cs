@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Mouse : MonoBehaviour
 {
@@ -6,7 +7,11 @@ public class Mouse : MonoBehaviour
     [SerializeField] RaycastHit rayCastHit;
     [SerializeField] float distance;
     [SerializeField] Texture2D texture2D;
+    [SerializeField] LayerMask layerMask;
 
+    [SerializeField] Encampment encampment;
+
+    [SerializeField] Manual manual;
 
     private void Awake()
     {
@@ -22,12 +27,18 @@ public class Mouse : MonoBehaviour
            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             Debug.DrawRay(ray.origin, ray.direction * distance, Color.green);
-
-            if (Physics.Raycast(ray, out rayCastHit, 100))
+           
+            if (Physics.Raycast(ray, out rayCastHit, 100,layerMask))
             {
-                Debug.Log(rayCastHit.collider.name);
-
                 Debug.DrawLine(ray.origin, rayCastHit.point, Color.red);
+                
+                if (rayCastHit.collider.TryGetComponent(out encampment))
+                {
+                    manual.Bind(encampment.Title, encampment.Description);
+                  
+                }
+
+                rayCastHit.collider.transform.GetChild(0).gameObject.SetActive(true);
             }
         }
     }
